@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+:root{
+  --bg: #000000;
+  --primary-red: #e11d48;
+  --light-text: #e6e6e6;
+}
+
+body{
+  background: linear-gradient(180deg, #000000 0%, #0b0b0b 100%);
+  color: var(--light-text);
+}
+
+.glow {
+  text-shadow: 0 0 6px rgba(225,29,72,0.14), 0 0 12px rgba(225,29,72,0.08);
+}
+
+.icon-3d{
+  transform-style: preserve-3d;
+  perspective: 800px;
+}
+
+.icon-3d > *{
+  transform: translateZ(0);
+  transition: transform 250ms ease;
+}
+
+.icon-3d:hover > *{
+  transform: translateZ(10px) rotateX(6deg) rotateY(6deg);
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
