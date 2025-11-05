@@ -62,9 +62,9 @@ export default function SkillsScene(){
         <Canvas camera={{ position: [0, 0, 6], fov: 50 }}>
           <ambientLight intensity={0.6} />
           <directionalLight position={[5, 5, 5]} intensity={0.6} />
-          {items.map((it, i) => (
+          {items.map((it) => (
             <FloatingLogoWithHover
-              key={i}
+              key={it.id}
               id={it.id}
               src={it.src}
               fallbackSrc={it.fallbackSrc}
