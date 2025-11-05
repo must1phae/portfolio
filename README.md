@@ -1,4 +1,4 @@
-# Itachi — Personal 3D Portfolio
+# Mustapha — Personal 3D Portfolio
 
 This is a small Vite + React portfolio scaffold built with Tailwind CSS, Framer Motion, and @react-three/fiber (Three.js).
 
