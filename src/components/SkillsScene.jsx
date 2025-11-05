@@ -19,15 +19,15 @@ export default function SkillsScene(){
     window.dispatchEvent(event)
   }
 
-  // Official brand logos using Simple Icons CDN rendered as DOM in 3D
+  // Official brand logos with embedded SVG for reliability
   const logos = useMemo(()=>[
-    { id:'Python', label: 'Python', level: 'Advanced', bg:'#3776AB', slug:'python', color:'ffffff' },
-    { id:'Java', label: 'Java', level: 'Intermediate', bg:'#007396', slug:'java', color:'ffffff' },
-    { id:'C', label: 'C', level: 'Intermediate', bg:'#27338e', slug:'c', color:'ffffff' },
-    { id:'PHP', label: 'PHP', level: 'Intermediate', bg:'#777BB4', slug:'php', color:'ffffff' },
-    { id:'JS', label: 'JavaScript', level: 'Intermediate', bg:'#F7DF1E', slug:'javascript', color:'000000' },
-    { id:'HTML', label: 'HTML', level: 'Experienced', bg:'#E34F26', slug:'html5', color:'ffffff' },
-    { id:'CSS', label: 'CSS', level: 'Experienced', bg:'#1572B6', slug:'css3', color:'ffffff' }
+    { id:'Python', label: 'Python', level: 'Advanced', bg:'#3776AB', icon: 'Py' },
+    { id:'Java', label: 'Java', level: 'Intermediate', bg:'#007396', icon: 'Java' },
+    { id:'C', label: 'C', level: 'Intermediate', bg:'#27338e', icon: 'C' },
+    { id:'PHP', label: 'PHP', level: 'Intermediate', bg:'#777BB4', icon: 'PHP' },
+    { id:'JS', label: 'JavaScript', level: 'Intermediate', bg:'#F7DF1E', icon: 'JS', textColor: '#000000' },
+    { id:'HTML', label: 'HTML', level: 'Experienced', bg:'#E34F26', icon: 'HTML' },
+    { id:'CSS', label: 'CSS', level: 'Experienced', bg:'#1572B6', icon: 'CSS' }
   ], [])
 
   const positions = [
@@ -36,8 +36,6 @@ export default function SkillsScene(){
   // combine logos with positions
   const items = logos.map((l, i) => ({
     ...l,
-    src: `https://cdn.simpleicons.org/${l.slug}/${l.color}`,
-    fallbackSrc: `https://cdn.jsdelivr.net/npm/simple-icons/icons/${l.slug}.svg`,
     position: positions[i] || [0,0,0],
     speed: 0.8 + i*0.05
   }))
@@ -51,9 +49,9 @@ export default function SkillsScene(){
           <FloatingLogoWithHover
             key={i}
             id={it.id}
-            src={it.src}
-            fallbackSrc={it.fallbackSrc}
+            icon={it.icon}
             bg={it.bg}
+            textColor={it.textColor}
             position={it.position}
             speed={it.speed}
             onHoverStart={(name, clientX, clientY) => setHoverInfo({ name: it.label, x: clientX, y: clientY, level: it.level })}
@@ -78,10 +76,9 @@ export default function SkillsScene(){
   )
 }
 
-function FloatingLogoWithHover({ id, src, fallbackSrc, bg, position, speed = 1, onHoverStart = ()=>{}, onHoverMove = ()=>{}, onHoverEnd = ()=>{}, onClick = ()=>{} }){
+function FloatingLogoWithHover({ id, icon, bg, textColor = '#ffffff', position, speed = 1, onHoverStart = ()=>{}, onHoverMove = ()=>{}, onHoverEnd = ()=>{}, onClick = ()=>{} }){
   const ref = useRef()
   const hovered = useRef(false)
-  const imgRef = useRef(null)
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime() * speed
       if(ref.current){
@@ -122,22 +119,18 @@ function FloatingLogoWithHover({ id, src, fallbackSrc, bg, position, speed = 1, 
             boxShadow: '0 10px 24px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(255,255,255,0.06)'
           }}
         >
-          {src ? (
-            <img
-              ref={imgRef}
-              src={src}
-              alt={id}
-              width={58}
-              height={58}
-              referrerPolicy="no-referrer"
-              style={{ filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.35))' }}
-              onError={(e)=>{
-                if (fallbackSrc && e.currentTarget.src !== fallbackSrc) {
-                  e.currentTarget.src = fallbackSrc
-                }
-              }}
-            />
-          ) : null}
+          <div
+            style={{
+              fontSize: icon.length > 3 ? '20px' : '28px',
+              fontWeight: 'bold',
+              color: textColor,
+              fontFamily: '"JetBrains Mono", monospace',
+              textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+              letterSpacing: '-0.5px'
+            }}
+          >
+            {icon}
+          </div>
         </div>
       </Html>
     </mesh>
