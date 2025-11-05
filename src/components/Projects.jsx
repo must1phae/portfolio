@@ -43,19 +43,22 @@ export default function Projects(){
     return () => window.removeEventListener('filterProjects', handleFilter)
   }, [])
   return (
-    <section id="projects" className="mt-20">
-      <h2 className="text-2xl font-semibold glow">Projects {activeFilter && 
-        <span className="text-lg font-normal text-red-400 ml-2">
-          filtered by {activeFilter}
-          <button 
-            onClick={() => window.dispatchEvent(new CustomEvent('filterProjects', { detail: { skill: null } }))}
-            className="ml-2 text-sm text-slate-400 hover:text-white"
-          >
-            (clear)
-          </button>
-        </span>
-      }</h2>
-      <div className="mt-6 grid md:grid-cols-3 gap-6">
+    <section id="projects" className="mt-16 sm:mt-20">
+      <h2 className="text-xl sm:text-2xl font-semibold glow">
+        Projects 
+        {activeFilter && 
+          <span className="block sm:inline text-base sm:text-lg font-normal text-red-400 mt-2 sm:mt-0 sm:ml-2">
+            filtered by {activeFilter}
+            <button 
+              onClick={() => window.dispatchEvent(new CustomEvent('filterProjects', { detail: { skill: null } }))}
+              className="ml-2 text-sm text-slate-400 hover:text-white transition-colors"
+            >
+              (clear)
+            </button>
+          </span>
+        }
+      </h2>
+      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         <AnimatePresence mode="popLayout">
           {projects.map(p => (
             <motion.div
@@ -64,18 +67,18 @@ export default function Projects(){
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               whileHover={{ scale: 1.03, y: -6 }}
-              className="block bg-[#0b0b0b] p-5 rounded-xl border border-red-900 shadow-neon-lg transform-gpu"
+              className="block bg-[#0b0b0b] p-4 sm:p-5 rounded-xl border border-red-900 shadow-neon-lg transform-gpu"
             >
-              <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-lg text-white">{p.title}</h3>
-                <div className="flex items-center gap-3">
-                  <a href={p.github} target="_blank" rel="noreferrer" className="text-red-400 hover:text-white">Github</a>
-                  <a href={p.live} target="_blank" rel="noreferrer" className="text-red-400 hover:text-white">Live</a>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
+                <h3 className="font-semibold text-base sm:text-lg text-white">{p.title}</h3>
+                <div className="flex items-center gap-3 text-sm">
+                  <a href={p.github} target="_blank" rel="noreferrer" className="text-red-400 hover:text-white transition-colors">Github</a>
+                  <a href={p.live} target="_blank" rel="noreferrer" className="text-red-400 hover:text-white transition-colors">Live</a>
                 </div>
               </div>
-              <p className="mt-2 text-[#e6e6e6] text-sm">{p.desc}</p>
-              <div className="mt-4 flex gap-2 text-xs text-[#e6e6e6]">
-                {p.tags.map(t => <span key={t} className="px-2 py-1 bg-[#111] rounded-md border border-red-900">{t}</span>)}
+              <p className="mt-2 text-[#e6e6e6] text-sm leading-relaxed">{p.desc}</p>
+              <div className="mt-4 flex flex-wrap gap-2 text-xs text-[#e6e6e6]">
+                {p.tags.map(t => <span key={t} className="px-2 py-1 bg-[#111] rounded-md border border-red-900 whitespace-nowrap">{t}</span>)}
               </div>
             </motion.div>
           ))}

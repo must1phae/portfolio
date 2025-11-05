@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import ThreeScene from './ThreeScene'
+import LaptopScene from './LaptopScene'
 
 export default function About(){
   return (
@@ -28,7 +28,7 @@ export default function About(){
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
         >
-          <ThreeScene />
+          <LaptopScene />
         </motion.div>
       </div>
     </section>
