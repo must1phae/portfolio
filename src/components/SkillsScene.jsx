@@ -47,9 +47,9 @@ export default function SkillsScene(){
     <ErrorBoundary fallback={
       <div className="w-full h-80 md:h-96 rounded-lg overflow-hidden bg-gradient-to-br from-[#071025] to-[#120517] p-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {logos.map((logo, i) => (
-            <div key={i} className="p-4 rounded-lg border border-slate-700 bg-slate-800/50 flex flex-col items-center justify-center hover:border-red-900 transition-colors cursor-pointer"
-                 onClick={()=>handleSkillClick(logo.id)}>
+          {logos.map((logo) => (
+            <div key={logo.id} className="p-4 rounded-lg border border-slate-700 bg-slate-800/50 flex flex-col items-center justify-center hover:border-red-900 transition-colors cursor-pointer"
+                 onClick={() => handleSkillClick(logo.id)}>
               <div className="w-12 h-12 rounded-full mb-2" style={{ backgroundColor: logo.bg }}></div>
               <div className="text-sm text-slate-200 font-medium">{logo.label}</div>
               <div className="text-xs text-slate-400">{logo.level}</div>
