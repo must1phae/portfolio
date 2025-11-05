@@ -1,36 +1,15 @@
 import React, { useRef, useMemo, useState } from 'react'
-import { Canvas, useFrame, useLoader } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
-import { TextureLoader } from 'three'
-
-function svgToDataUrl(svg){
-  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`
-}
-
-function makeLogoSVG(text, bg, fg){
-  return `
-  <svg xmlns='http://www.w3.org/2000/svg' width='256' height='256' viewBox='0 0 256 256'>
-    <rect width='100%' height='100%' fill='${bg}' rx='28' />
-    <text x='50%' y='54%' dominant-baseline='middle' text-anchor='middle' font-family='Arial, Helvetica, sans-serif' font-size='80' fill='${fg}'>${text}</text>
-  </svg>`
-}
-
-function FloatingLogo({ texture, position, speed = 1 }){
-  const ref = useRef()
-  useFrame(({ clock }) => {
-    const t = clock.getElapsedTime() * speed
-    if(ref.current){
-      ref.current.position.y = position[1] + Math.sin(t) * 0.35
-      ref.current.rotation.y = Math.sin(t * 0.5) * 0.3
-    }
-  })
-  return (
-    <mesh ref={ref} position={position}>
-      <planeGeometry args={[1.4,1.4]} />
-      <meshStandardMaterial map={texture} transparent={true} />
-    </mesh>
-  )
-}
+import { Canvas, useFrame } from '@react-three/fiber'
+import { OrbitControls, Html } from '@react-three/drei'
+import { 
+  SiPython,
+  SiJava,
+  SiC,
+  SiPhp,
+  SiJavascript,
+  SiHtml5,
+  SiCss3
+} from 'react-icons/si'
 
 export default function SkillsScene(){
   const [hoverInfo, setHoverInfo] = useState({ name: null, x: 0, y: 0 })
@@ -49,24 +28,26 @@ export default function SkillsScene(){
     window.dispatchEvent(event)
   }
 
+  // Official brand logos using react-icons (Simple Icons) rendered as DOM in 3D
   const logos = useMemo(()=>[
-    { id:'Python', label: 'Python', level: 'Advanced', svg: makeLogoSVG('Py','#3776AB','#FFFFFF') },
-    { id:'Java', label: 'Java', level: 'Intermediate', svg: makeLogoSVG('Jv','#007396','#FFFFFF') },
-    { id:'C', label: 'C', level: 'Intermediate', svg: makeLogoSVG('C','#004482','#FFFFFF') },
-    { id:'PHP', label: 'PHP', level: 'Intermediate', svg: makeLogoSVG('PHP','#777BB4','#FFFFFF') },
-    { id:'JS', label: 'JavaScript', level: 'Intermediate', svg: makeLogoSVG('JS','#F7DF1E','#000000') },
-    { id:'HTML', label: 'HTML', level: 'Experienced', svg: makeLogoSVG('HT','#E34F26','#FFFFFF') },
-    { id:'CSS', label: 'CSS', level: 'Experienced', svg: makeLogoSVG('CS','#1572B6','#FFFFFF') }
+    { id:'Python', label: 'Python', level: 'Advanced', Icon: SiPython, bg:'#3776AB', color:'#ffffff' },
+    { id:'Java', label: 'Java', level: 'Intermediate', Icon: SiJava, bg:'#007396', color:'#ffffff' },
+    { id:'C', label: 'C', level: 'Intermediate', Icon: SiC, bg:'#27338e', color:'#ffffff' },
+    { id:'PHP', label: 'PHP', level: 'Intermediate', Icon: SiPhp, bg:'#777BB4', color:'#ffffff' },
+    { id:'JS', label: 'JavaScript', level: 'Intermediate', Icon: SiJavascript, bg:'#F7DF1E', color:'#000000' },
+    { id:'HTML', label: 'HTML', level: 'Experienced', Icon: SiHtml5, bg:'#E34F26', color:'#ffffff' },
+    { id:'CSS', label: 'CSS', level: 'Experienced', Icon: SiCss3, bg:'#1572B6', color:'#ffffff' }
   ], [])
-
-  const urls = logos.map(l => svgToDataUrl(l.svg))
-  const textures = useLoader(TextureLoader, urls)
 
   const positions = [
     [-1.8,0.2,0],[-0.6,0.6,-0.4],[0.6,-0.2,0.3],[1.6,0.4,-0.2],[-0.2,-0.8,0.6],[0.9,0.9,0.2],[-1.1,-0.6,-0.5]
   ]
-  // combine logos and textures
-  const items = textures.map((tex, i) => ({ id: logos[i].id, label: logos[i].label, level: logos[i].level, texture: tex, position: positions[i], speed: 0.8 + i*0.05 }))
+  // combine logos with positions
+  const items = logos.map((l, i) => ({
+    ...l,
+    position: positions[i] || [0,0,0],
+    speed: 0.8 + i*0.05
+  }))
 
   return (
     <div className="w-full h-80 md:h-96 rounded-lg overflow-hidden bg-transparent relative">
@@ -77,12 +58,15 @@ export default function SkillsScene(){
           <FloatingLogoWithHover
             key={i}
             id={it.id}
-            texture={it.texture}
+            Icon={it.Icon}
+            bg={it.bg}
+            color={it.color}
             position={it.position}
             speed={it.speed}
             onHoverStart={(name, clientX, clientY) => setHoverInfo({ name: it.label, x: clientX, y: clientY, level: it.level })}
             onHoverMove={(clientX, clientY) => setHoverInfo(prev => ({ ...prev, x: clientX, y: clientY }))}
             onHoverEnd={() => setHoverInfo({ name: null, x: 0, y: 0 })}
+            onClick={()=>handleSkillClick(it.id)}
           />
         ))}
         <OrbitControls enableZoom={false} enablePan={false} autoRotate={true} autoRotateSpeed={0.6} />
@@ -101,7 +85,7 @@ export default function SkillsScene(){
   )
 }
 
-function FloatingLogoWithHover({ id, texture, position, speed = 1, onHoverStart = ()=>{}, onHoverMove = ()=>{}, onHoverEnd = ()=>{} }){
+function FloatingLogoWithHover({ id, Icon, bg, color, position, speed = 1, onHoverStart = ()=>{}, onHoverMove = ()=>{}, onHoverEnd = ()=>{}, onClick = ()=>{} }){
   const ref = useRef()
   const hovered = useRef(false)
   useFrame(({ clock }) => {
@@ -125,10 +109,28 @@ function FloatingLogoWithHover({ id, texture, position, speed = 1, onHoverStart 
       onPointerOver={(e)=>{ e.stopPropagation(); hovered.current = true; document.body.style.cursor = 'pointer'; onHoverStart(id, e.clientX, e.clientY) }}
       onPointerMove={(e)=>{ e.stopPropagation(); onHoverMove(e.clientX, e.clientY) }}
       onPointerOut={(e)=>{ e.stopPropagation(); hovered.current = false; document.body.style.cursor = 'default'; onHoverEnd() }}
-      onClick={(e)=>{ e.stopPropagation(); handleSkillClick(id) }}
+      onClick={(e)=>{ e.stopPropagation(); onClick(id) }}
     >
-      <planeGeometry args={[1.4,1.4]} />
-      <meshStandardMaterial map={texture} transparent={true} />
+      {/* invisible plane for raycasting / hover */}
+      <planeGeometry args={[1.5,1.5]} />
+      <meshBasicMaterial transparent opacity={0} />
+      {/* DOM icon rendered in 3D space */}
+      <Html center transform>
+        <div
+          style={{
+            width: 96,
+            height: 96,
+            borderRadius: 20,
+            background: bg,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 10px 24px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(255,255,255,0.06)'
+          }}
+        >
+          {Icon ? <Icon size={58} color={color} /> : null}
+        </div>
+      </Html>
     </mesh>
   )
 }
