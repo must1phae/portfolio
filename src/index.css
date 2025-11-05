@@ -14,6 +14,16 @@ body{
   color: var(--light-text);
 }
 
+/* Global typography using Tailwind's base layer */
+@layer base {
+  html { @apply antialiased; }
+  body { @apply font-sans text-[15.5px] md:text-[16px] leading-relaxed; }
+  h1, h2, h3, h4 { @apply font-display tracking-tight; }
+  /* Balance long headings for nicer wrapping (native CSS) */
+  h1 { text-wrap: balance; }
+  code, kbd, samp { @apply font-mono; }
+}
+
 .glow {
   text-shadow: 0 0 6px rgba(225,29,72,0.14), 0 0 12px rgba(225,29,72,0.08);
 }
