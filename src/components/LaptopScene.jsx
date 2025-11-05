@@ -3,7 +3,7 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Float, ContactShadows, Html, MeshDistortMaterial, Sphere } from '@react-three/drei'
 
 // Portfolio-themed 3D scene with code symbols
-function CodeSymbol({ position, symbol, color }) {
+function CodeSymbol({ position, color }) {
   const ref = useRef()
   
   useFrame(({ clock }) => {
@@ -52,10 +52,10 @@ export default function LaptopScene(){
           <CentralSphere />
           
           {/* Code symbols orbiting around */}
-          <CodeSymbol position={[2, 0.5, 0]} symbol="</>" color="#3776AB" />
-          <CodeSymbol position={[-2, -0.5, 0]} symbol="{}" color="#F7DF1E" />
-          <CodeSymbol position={[0, 1.5, -1]} symbol="<>" color="#E34F26" />
-          <CodeSymbol position={[-1.5, -1, 1]} symbol="[]" color="#1572B6" />
+          <CodeSymbol position={[2, 0.5, 0]} color="#3776AB" />
+          <CodeSymbol position={[-2, -0.5, 0]} color="#F7DF1E" />
+          <CodeSymbol position={[0, 1.5, -1]} color="#E34F26" />
+          <CodeSymbol position={[-1.5, -1, 1]} color="#1572B6" />
           
           <ContactShadows position={[0, -2, 0]} opacity={0.4} scale={10} blur={2} far={4} />
         </Suspense>
