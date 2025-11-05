@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#000000"/>
+      <stop offset="100%" stop-color="#0b0b0b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#g)"/>
+  <g transform="translate(80,110)">
+    <rect x="0" y="0" width="1040" height="410" rx="24" fill="#111418" stroke="#e11d48" stroke-opacity="0.4"/>
+    <text x="520" y="170" text-anchor="middle" fill="#e6e6e6" font-size="64" font-family="Space Grotesk, Arial, sans-serif">Itachi — Developer Portfolio</text>
+    <text x="520" y="240" text-anchor="middle" fill="#cfcfcf" font-size="36" font-family="Space Grotesk, Arial, sans-serif">React • Three.js • Tailwind • Framer Motion</text>
+    <text x="520" y="300" text-anchor="middle" fill="#9ca3af" font-size="28" font-family="Space Grotesk, Arial, sans-serif">by Mustapha El Ghazzal</text>
+  </g>
+</svg>

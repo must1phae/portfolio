@@ -1,15 +1,6 @@
 import React, { useRef, useMemo, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Html } from '@react-three/drei'
-import { 
-  SiPython,
-  SiJava,
-  SiC,
-  SiPhp,
-  SiJavascript,
-  SiHtml5,
-  SiCss3
-} from 'react-icons/si'
 
 export default function SkillsScene(){
   const [hoverInfo, setHoverInfo] = useState({ name: null, x: 0, y: 0 })
@@ -28,15 +19,15 @@ export default function SkillsScene(){
     window.dispatchEvent(event)
   }
 
-  // Official brand logos using react-icons (Simple Icons) rendered as DOM in 3D
+  // Official brand logos using Simple Icons CDN rendered as DOM in 3D
   const logos = useMemo(()=>[
-    { id:'Python', label: 'Python', level: 'Advanced', Icon: SiPython, bg:'#3776AB', color:'#ffffff' },
-    { id:'Java', label: 'Java', level: 'Intermediate', Icon: SiJava, bg:'#007396', color:'#ffffff' },
-    { id:'C', label: 'C', level: 'Intermediate', Icon: SiC, bg:'#27338e', color:'#ffffff' },
-    { id:'PHP', label: 'PHP', level: 'Intermediate', Icon: SiPhp, bg:'#777BB4', color:'#ffffff' },
-    { id:'JS', label: 'JavaScript', level: 'Intermediate', Icon: SiJavascript, bg:'#F7DF1E', color:'#000000' },
-    { id:'HTML', label: 'HTML', level: 'Experienced', Icon: SiHtml5, bg:'#E34F26', color:'#ffffff' },
-    { id:'CSS', label: 'CSS', level: 'Experienced', Icon: SiCss3, bg:'#1572B6', color:'#ffffff' }
+    { id:'Python', label: 'Python', level: 'Advanced', bg:'#3776AB', slug:'python', color:'ffffff' },
+    { id:'Java', label: 'Java', level: 'Intermediate', bg:'#007396', slug:'java', color:'ffffff' },
+    { id:'C', label: 'C', level: 'Intermediate', bg:'#27338e', slug:'c', color:'ffffff' },
+    { id:'PHP', label: 'PHP', level: 'Intermediate', bg:'#777BB4', slug:'php', color:'ffffff' },
+    { id:'JS', label: 'JavaScript', level: 'Intermediate', bg:'#F7DF1E', slug:'javascript', color:'000000' },
+    { id:'HTML', label: 'HTML', level: 'Experienced', bg:'#E34F26', slug:'html5', color:'ffffff' },
+    { id:'CSS', label: 'CSS', level: 'Experienced', bg:'#1572B6', slug:'css3', color:'ffffff' }
   ], [])
 
   const positions = [
@@ -45,6 +36,8 @@ export default function SkillsScene(){
   // combine logos with positions
   const items = logos.map((l, i) => ({
     ...l,
+    src: `https://cdn.simpleicons.org/${l.slug}/${l.color}`,
+    fallbackSrc: `https://cdn.jsdelivr.net/npm/simple-icons/icons/${l.slug}.svg`,
     position: positions[i] || [0,0,0],
     speed: 0.8 + i*0.05
   }))
@@ -58,9 +51,9 @@ export default function SkillsScene(){
           <FloatingLogoWithHover
             key={i}
             id={it.id}
-            Icon={it.Icon}
+            src={it.src}
+            fallbackSrc={it.fallbackSrc}
             bg={it.bg}
-            color={it.color}
             position={it.position}
             speed={it.speed}
             onHoverStart={(name, clientX, clientY) => setHoverInfo({ name: it.label, x: clientX, y: clientY, level: it.level })}
@@ -85,9 +78,10 @@ export default function SkillsScene(){
   )
 }
 
-function FloatingLogoWithHover({ id, Icon, bg, color, position, speed = 1, onHoverStart = ()=>{}, onHoverMove = ()=>{}, onHoverEnd = ()=>{}, onClick = ()=>{} }){
+function FloatingLogoWithHover({ id, src, fallbackSrc, bg, position, speed = 1, onHoverStart = ()=>{}, onHoverMove = ()=>{}, onHoverEnd = ()=>{}, onClick = ()=>{} }){
   const ref = useRef()
   const hovered = useRef(false)
+  const imgRef = useRef(null)
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime() * speed
       if(ref.current){
@@ -128,7 +122,22 @@ function FloatingLogoWithHover({ id, Icon, bg, color, position, speed = 1, onHov
             boxShadow: '0 10px 24px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(255,255,255,0.06)'
           }}
         >
-          {Icon ? <Icon size={58} color={color} /> : null}
+          {src ? (
+            <img
+              ref={imgRef}
+              src={src}
+              alt={id}
+              width={58}
+              height={58}
+              referrerPolicy="no-referrer"
+              style={{ filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.35))' }}
+              onError={(e)=>{
+                if (fallbackSrc && e.currentTarget.src !== fallbackSrc) {
+                  e.currentTarget.src = fallbackSrc
+                }
+              }}
+            />
+          ) : null}
         </div>
       </Html>
     </mesh>
