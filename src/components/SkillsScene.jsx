@@ -2,6 +2,28 @@ import React, { useRef, useMemo, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Html } from '@react-three/drei'
 
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { hasError: false }
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true }
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.log('3D Skills Scene Error:', error, errorInfo)
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback
+    }
+    return this.props.children
+  }
+}
+
 export default function SkillsScene(){
   const [hoverInfo, setHoverInfo] = useState({ name: null, x: 0, y: 0 })
   
@@ -43,38 +65,53 @@ export default function SkillsScene(){
   }))
 
   return (
-    <div className="w-full h-80 md:h-96 rounded-lg overflow-hidden bg-transparent relative">
-      <Canvas camera={{ position: [0, 0, 6], fov: 50 }}>
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[5, 5, 5]} intensity={0.6} />
-        {items.map((it, i) => (
-          <FloatingLogoWithHover
-            key={i}
-            id={it.id}
-            src={it.src}
-            fallbackSrc={it.fallbackSrc}
-            bg={it.bg}
-            position={it.position}
-            speed={it.speed}
-            onHoverStart={(name, clientX, clientY) => setHoverInfo({ name: it.label, x: clientX, y: clientY, level: it.level })}
-            onHoverMove={(clientX, clientY) => setHoverInfo(prev => ({ ...prev, x: clientX, y: clientY }))}
-            onHoverEnd={() => setHoverInfo({ name: null, x: 0, y: 0 })}
-            onClick={()=>handleSkillClick(it.id)}
-          />
-        ))}
-        <OrbitControls enableZoom={false} enablePan={false} autoRotate={true} autoRotateSpeed={0.6} />
-      </Canvas>
-
-      {/* DOM tooltip overlay */}
-      {hoverInfo.name && (
-        <div className="pointer-events-none absolute z-50" style={{ left: hoverInfo.x + 12, top: hoverInfo.y + 12 }}>
-          <div className="bg-black/80 text-white text-sm px-3 py-1 rounded-md border border-red-900">
-            <div className="font-medium">{hoverInfo.name}</div>
-            {hoverInfo.level && <div className="text-xs text-[#cfcfcf]">{hoverInfo.level}</div>}
-          </div>
+    <ErrorBoundary fallback={
+      <div className="w-full h-80 md:h-96 rounded-lg overflow-hidden bg-gradient-to-br from-[#071025] to-[#120517] p-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {logos.map((logo, i) => (
+            <div key={i} className="p-4 rounded-lg border border-slate-700 bg-slate-800/50 flex flex-col items-center justify-center hover:border-red-900 transition-colors cursor-pointer"
+                 onClick={()=>handleSkillClick(logo.id)}>
+              <div className="w-12 h-12 rounded-full mb-2" style={{ backgroundColor: logo.bg }}></div>
+              <div className="text-sm text-slate-200 font-medium">{logo.label}</div>
+              <div className="text-xs text-slate-400">{logo.level}</div>
+            </div>
+          ))}
         </div>
-      )}
-    </div>
+      </div>
+    }>
+      <div className="w-full h-80 md:h-96 rounded-lg overflow-hidden bg-transparent relative">
+        <Canvas camera={{ position: [0, 0, 6], fov: 50 }}>
+          <ambientLight intensity={0.6} />
+          <directionalLight position={[5, 5, 5]} intensity={0.6} />
+          {items.map((it, i) => (
+            <FloatingLogoWithHover
+              key={i}
+              id={it.id}
+              src={it.src}
+              fallbackSrc={it.fallbackSrc}
+              bg={it.bg}
+              position={it.position}
+              speed={it.speed}
+              onHoverStart={(name, clientX, clientY) => setHoverInfo({ name: it.label, x: clientX, y: clientY, level: it.level })}
+              onHoverMove={(clientX, clientY) => setHoverInfo(prev => ({ ...prev, x: clientX, y: clientY }))}
+              onHoverEnd={() => setHoverInfo({ name: null, x: 0, y: 0 })}
+              onClick={()=>handleSkillClick(it.id)}
+            />
+          ))}
+          <OrbitControls enableZoom={false} enablePan={false} autoRotate={true} autoRotateSpeed={0.6} />
+        </Canvas>
+
+        {/* DOM tooltip overlay */}
+        {hoverInfo.name && (
+          <div className="pointer-events-none absolute z-50" style={{ left: hoverInfo.x + 12, top: hoverInfo.y + 12 }}>
+            <div className="bg-black/80 text-white text-sm px-3 py-1 rounded-md border border-red-900">
+              <div className="font-medium">{hoverInfo.name}</div>
+              {hoverInfo.level && <div className="text-xs text-[#cfcfcf]">{hoverInfo.level}</div>}
+            </div>
+          </div>
+        )}
+      </div>
+    </ErrorBoundary>
   )
 }
 
